@@ -66,17 +66,20 @@ def main():
     by_date = {}
     for row in rows:
         title = row.get("اسم الأنمي", "").strip()
-        date = row.get("موعد الإصدار المتحقق", "").strip() or "موعد غير محدد"
+        date = (row.get("موعد الإصدار المتحقق") or row.get("موعد العرض") or "").strip() or "موعد غير محدد"
         if not title:
             continue
         genre = row.get("التصنيفات", "").strip().replace("،", "، ")
         genre = re.sub(r"\s*،\s*", "، ", genre)
         synopsis = row.get("النبذة", "").strip()
         release_type = row.get("نوع الإصدار", "")
+        image = (row.get("رابط الصورة") or row.get("الصورة") or "").strip()
         tag = "فيلم" if "فيلم" in release_type else ""
         item = {"title": title, "genre": genre, "synopsis": synopsis}
         if tag:
             item["tag"] = tag
+        if image:
+            item["image"] = image
         g = by_date.get(date)
         if g is None:
             g = {"date": date, "short": short_label(date), "items": []}

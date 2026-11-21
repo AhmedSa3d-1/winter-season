@@ -4,7 +4,7 @@ import logoUrl from "./assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg";
 import watermarkUrl from "./assets/logo_transparent.png";
 import animeData from "./src/data/anime.json";
 
-type Anime = { title: string; genre: string; synopsis: string; tag?: string };
+type Anime = { title: string; genre: string; synopsis: string; tag?: string; image?: string };
 type Group = { date: string; short: string; items: Anime[] };
 
 const groups: Group[] = (animeData as { groups: Group[] }).groups;
@@ -216,13 +216,21 @@ export default function App() {
                 </div>
                 <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                   {group.items.map((anime) => { const isSel = selected.has(anime.title); const open = openSynopsis.has(anime.title); return (
-                    <article key={anime.title} className={`anime-card relative rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
-                      <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
-                      <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
-                      <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
-                      <div className="mt-3 flex items-center gap-2"><span className="h-px flex-1 bg-white/30" /><span className="text-[10px] font-black tracking-widest text-[#bfe6ff]">النبذة • SYNOPSIS</span><span className="h-px flex-1 bg-white/30" /></div>
-                      {open ? <p className="mt-2 rounded-xl bg-[#071a3a]/45 px-3 py-3 text-[14px] font-semibold leading-7 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.synopsis}</p> : <p className="mt-2 text-center text-[12px] font-bold text-[#bfe6ff]">النبذة مخفية ❄️</p>}
-                      <div className="mt-3 flex items-center justify-between gap-2">{anime.tag && <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071a3a]">فيلم • MOVIE</span>}<button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[#071a3a]" : "bg-[#dff2ff] text-[#071a3a]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div>
+                    <article key={anime.title} className={`anime-card relative overflow-hidden rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
+                      {anime.image && (
+                        <>
+                          <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${anime.image})` }} aria-hidden="true" />
+                          <div className="absolute inset-0 bg-gradient-to-b from-[#071a3a]/35 via-[#071a3a]/70 to-[#071a3a]/92" aria-hidden="true" />
+                        </>
+                      )}
+                      <div className="relative z-10">
+                        <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white bg-black/15"}`}>{isSel ? "★" : "☆"}</button></div>
+                        <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
+                        <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
+                        <div className="mt-3 flex items-center gap-2"><span className="h-px flex-1 bg-white/30" /><span className="text-[10px] font-black tracking-widest text-[#bfe6ff]">النبذة • SYNOPSIS</span><span className="h-px flex-1 bg-white/30" /></div>
+                        {open ? <p className="mt-2 rounded-xl bg-[#071a3a]/55 px-3 py-3 text-[14px] font-semibold leading-7 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.synopsis}</p> : <p className="mt-2 text-center text-[12px] font-bold text-[#bfe6ff]">النبذة مخفية ❄️</p>}
+                        <div className="mt-3 flex items-center justify-between gap-2">{anime.tag && <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071a3a]">فيلم • MOVIE</span>}<button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black backdrop-blur-sm"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[#071a3a]" : "bg-[#dff2ff] text-[#071a3a]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div>
+                      </div>
                     </article>); })}
                 </div>
               </section>))}
