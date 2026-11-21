@@ -5,63 +5,66 @@
 
 :root {
   --bg: #020a1e;
+  --bg-dark: #01071a;
   --surface: #0a1d3d;
+  --surface-dark: #081a38;
   --surface-2: #123264;
-  --ice: #dff2ff;
-  --ice-2: #bfe6ff;
+  --accent: #dff2ff;
+  --accent-2: #bfe6ff;
   --sky: #7cc4ff;
   --navy: #071a3a;
   --cream: #f2faff;
   --muted: #b9d6ef;
   --line: #9fd3ff;
+  --scrollbar: #4f8ac9;
   --safe-area-inset-top: env(safe-area-inset-top, 0px);
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #01071a; --surface: #081a38; }
+  :root { --bg: var(--bg-dark); --surface: var(--surface-dark); }
 }
 * { box-sizing: border-box; }
 html { background: var(--bg); min-width: 320px; }
 body { margin: 0; min-width: 320px; overflow-x: hidden; background: var(--bg); color: var(--cream); font-family: 'Cairo', Tahoma, sans-serif; }
 button, input { font: inherit; }
 button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-button:focus-visible, input:focus-visible { outline: 3px solid rgba(191,230,255,.95); outline-offset: 3px; }
+button:focus-visible, input:focus-visible { outline: 3px solid color-mix(in srgb, var(--accent-2) 95%, transparent); outline-offset: 3px; }
 img { max-width: 100%; }
 @supports (padding: max(0px)) {
   body { padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
 }
 @keyframes snowfall { 0% { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; } 8% { opacity: .9; } 100% { transform: translateY(112vh) translateX(28px) rotate(220deg); opacity: .25; } }
-.snowflake { position: fixed; top: 0; z-index: 1; pointer-events: none; color: #fff; animation: snowfall linear infinite; text-shadow: 0 0 10px rgba(255,255,255,.8); }
+.snowflake { position: fixed; top: 0; z-index: 1; pointer-events: none; color: var(--cream); animation: snowfall linear infinite; text-shadow: 0 0 10px rgba(255,255,255,.8); }
 @keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
 .floaty { animation: floaty 3.2s ease-in-out infinite; }
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { scrollbar-width: none; }
 ::-webkit-scrollbar { width: 10px; }
-::-webkit-scrollbar-thumb { background: #4f8ac9; border-radius: 20px; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 20px; }
 .anime-card {
-  border: 1px solid rgba(159, 211, 255, 0.45);
-  background: linear-gradient(180deg, rgba(18, 50, 100, 0.72), rgba(10, 29, 61, 0.88));
+  border: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--surface-2) 72%, transparent), color-mix(in srgb, var(--surface) 88%, transparent));
   box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 }
 .glass {
-  border: 1px solid rgba(159, 211, 255, 0.35);
-  background: rgba(10, 29, 61, 0.55);
+  border: 1px solid color-mix(in srgb, var(--line) 35%, transparent);
+  background: color-mix(in srgb, var(--surface) 55%, transparent);
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 .date-strip {
-  border: 1px solid rgba(159, 211, 255, 0.4);
-  background: linear-gradient(135deg, rgba(124, 196, 255, 0.22), rgba(18, 50, 100, 0.72));
+  border: 1px solid color-mix(in srgb, var(--line) 40%, transparent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--sky) 22%, transparent), color-mix(in srgb, var(--surface-2) 72%, transparent));
 }
 .ice-rule {
   height: 2px;
-  background: linear-gradient(90deg, transparent, rgba(191, 230, 255, 0.85), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--accent-2) 85%, transparent), transparent);
 }
 @media (min-width: 768px) {
   .anime-card { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
-  .anime-card:hover { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.35); border-color: rgba(191, 230, 255, 0.75); }
+  .anime-card:hover { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.35); border-color: color-mix(in srgb, var(--accent-2) 75%, transparent); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

@@ -1,11 +1,17 @@
-# Winter 2027 Anime Guide
-## Run locally
-Install Node.js 20 or later, then run:
+# Seasonal Anime Guide
 
-```sh
-npm install
-npm run dev
-```
+## إعداد الموسم والثيم
+
+ملف إعداد الموقع: `src/data/site-config.json`
+
+- `activeSeason`: الموسم النشط (`winter`, `spring`, `summer`, `fall`)
+- `seasons.*`: عناوين، وصف، هاشتاقات، نصوص المشاركة، وثيم الألوان لكل موسم
+
+لتغيير الموقع من شتاء إلى صيف مثلًا:
+1. عدّل `activeSeason` إلى `summer`
+2. عدّل بيانات الموسم في `seasons.summer` (السنة، العناوين، الهاشتاقات، الألوان)
+3. حدّث `data/anime.xlsx` ببيانات الموسم
+4. شغّل `npm run build:data`
 
 ## تحديث بيانات الأنميات
 

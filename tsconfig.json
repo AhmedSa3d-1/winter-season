@@ -26,6 +26,7 @@
   "include": [
     "App.tsx",
     "main.tsx",
-    "src/data/anime.json"
+    "src/data/anime.json",
+    "src/data/site-config.json"
   ]
 }
