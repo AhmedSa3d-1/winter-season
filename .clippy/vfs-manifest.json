@@ -1,0 +1,112 @@
+[
+  {
+    "path": "App.tsx",
+    "file": {
+      "file_name": "/mnt/data/src/App.tsx",
+      "storage_handle": "",
+      "storage_type": "BASE64"
+    }
+  },
+  {
+    "path": "assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg",
+    "file": {
+      "file_name": "photo1746480554737042166.jpeg",
+      "storage_handle": "",
+      "storage_type": "MANIFOLD",
+      "fbid": 1166044325954690,
+      "mime": "image/jpeg",
+      "href": "https://scontent.xx.fbcdn.net/m1/v/t6/AQPMobA_bQzBMJKOBk6pfsbWZP7Os-aQEVw_yvWsZj5mOgEJnee0NmaGnN-_E1bH7uSBJ40OJIxvgR8n8NDkjLjZLvHmr5iQw64LsAjiQVar9xU5Ct2ACm4Fz1GN?ccb=10-5&oh=00_AQR2QVFD7ydtO3b9NL5SHJNdYQVvoGAqP0bK96oGDP6z6g&oe=6B03708E&_nc_sid=4ee932",
+      "source_identifiers": [
+        {
+          "type": "typed_fbid",
+          "value": {
+            "fbid": 1166044325954690,
+            "fbtype": 71334
+          }
+        }
+      ],
+      "media_origin": "USER_UPLOAD"
+    }
+  },
+  {
+    "path": "assets/4e206c56ec941935-logo_transparent.png",
+    "file": {
+      "file_name": "logo_transparent.png",
+      "storage_handle": "",
+      "storage_type": "EVERSTORE",
+      "mime": "image/png",
+      "href": "https://cdn.fbsbx.com/v/t65.102178-21/874398382_1415636460328190_3542356073843301409_n.jpg/logo_transparent.png?_nc_ht=cdn.fbsbx.com&_nc_ohc=epIEZVlSWowQ7kNvwFP13_X&sdl=0&ccb=14-4&oh=00_AQSK4QMzKyuBZfgBt8GAFURcVb6C70jzuahaRViy0Kez0Q&oe=6B290DCB&_nc_sid=4ee932",
+      "width": 1056,
+      "height": 939,
+      "source_identifiers": [
+        {
+          "type": "typed_fbid",
+          "value": {
+            "fbid": 1166044325954690,
+            "fbtype": 71334
+          }
+        },
+        {
+          "type": "url",
+          "value": "https://www.h.metaaiusercontent.com/app/maiwa-p-cf48a79318db20b772a35fc647d2e0c23e80f4ebfe91f6ad/actions"
+        },
+        {
+          "type": "url",
+          "value": "https://www.h.metaaiusercontent.com/app/maiwa-pf-687a53875d04582e82d1afa54b60b9a5c0fd64d0d56623b9/actions"
+        },
+        {
+          "type": "url",
+          "value": "safetynet_input_media://6cbac0af8efc46bc818bd2ff3d74e17b"
+        }
+      ],
+      "source_tools": [
+        "container.build_react_artifact",
+        "container.create",
+        "container.create_web_artifact_agent_stateful",
+        "container.edit_file",
+        "container.python_execution",
+        "container.validate_react_artifact",
+        "container.view"
+      ],
+      "media_origin": "SCRIPT"
+    }
+  },
+  {
+    "path": "index.css",
+    "file": {
+      "file_name": "/mnt/data/.krabby/agentic_web_artifacts/agentic_artifact_679242608314/f711ca7d3522/index.css",
+      "storage_handle": "",
+      "storage_type": "BASE64",
+      "source_identifiers": [
+        {
+          "type": "typed_fbid",
+          "value": {
+            "fbid": 1166044325954690,
+            "fbtype": 71334
+          }
+        },
+        {
+          "type": "url",
+          "value": "https://www.h.metaaiusercontent.com/app/maiwa-p-cf48a79318db20b772a35fc647d2e0c23e80f4ebfe91f6ad/actions"
+        },
+        {
+          "type": "url",
+          "value": "https://www.h.metaaiusercontent.com/app/maiwa-pf-687a53875d04582e82d1afa54b60b9a5c0fd64d0d56623b9/actions"
+        },
+        {
+          "type": "url",
+          "value": "safetynet_input_media://6cbac0af8efc46bc818bd2ff3d74e17b"
+        }
+      ],
+      "source_tools": [
+        "container.build_react_artifact",
+        "container.create",
+        "container.create_web_artifact_agent_stateful",
+        "container.edit_file",
+        "container.python_execution",
+        "container.validate_react_artifact",
+        "container.view"
+      ]
+    }
+  }
+]

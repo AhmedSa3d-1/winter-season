@@ -1,0 +1,37 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800;900&family=Oswald:wght@500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #020a1e;
+  --surface: #0a1d3d;
+  --surface-2: #123264;
+  --ice: #dff2ff;
+  --ice-2: #bfe6ff;
+  --sky: #7cc4ff;
+  --navy: #071a3a;
+  --cream: #f2faff;
+  --muted: #b9d6ef;
+  --line: #9fd3ff;
+}
+@media (prefers-color-scheme: dark) {
+  :root { --bg: #01071a; --surface: #081a38; }
+}
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body { margin: 0; background: var(--bg); color: var(--cream); font-family: 'Cairo', Tahoma, sans-serif; }
+.font-en { font-family: 'Oswald', 'Cairo', sans-serif; letter-spacing: .02em; }
+.poster-shadow { box-shadow: 0 24px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(191,230,255,.35); }
+.ice-rule { height: 3px; background: linear-gradient(90deg, transparent, var(--ice-2), transparent); }
+.date-strip { background: linear-gradient(90deg, #dff2ff, #a8dcff 45%, #eaf7ff 70%, #bfe6ff); color: #071a3a; }
+.anime-card { background: linear-gradient(180deg, rgba(255,255,255,.14), rgba(160,210,255,.08)); border: 1px solid rgba(255,255,255,.55); backdrop-filter: blur(10px); box-shadow: 0 16px 38px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.35); }
+.glass { background: rgba(255,255,255,.10); border: 1px solid rgba(255,255,255,.28); backdrop-filter: blur(12px); }
+@keyframes snowfall { 0% { transform: translateY(-12vh) translateX(0) rotate(0deg); opacity: 0; } 8% { opacity: .9; } 100% { transform: translateY(112vh) translateX(28px) rotate(220deg); opacity: .25; } }
+.snowflake { position: fixed; top: 0; z-index: 1; pointer-events: none; color: #fff; animation: snowfall linear infinite; text-shadow: 0 0 10px rgba(255,255,255,.8); }
+@keyframes floaty { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+.floaty { animation: floaty 3.2s ease-in-out infinite; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; }
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-thumb { background: #4f8ac9; border-radius: 20px; }
