@@ -37,9 +37,31 @@ img { max-width: 100%; }
 .no-scrollbar { scrollbar-width: none; }
 ::-webkit-scrollbar { width: 10px; }
 ::-webkit-scrollbar-thumb { background: #4f8ac9; border-radius: 20px; }
+.anime-card {
+  border: 1px solid rgba(159, 211, 255, 0.45);
+  background: linear-gradient(180deg, rgba(18, 50, 100, 0.72), rgba(10, 29, 61, 0.88));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+.glass {
+  border: 1px solid rgba(159, 211, 255, 0.35);
+  background: rgba(10, 29, 61, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.date-strip {
+  border: 1px solid rgba(159, 211, 255, 0.4);
+  background: linear-gradient(135deg, rgba(124, 196, 255, 0.22), rgba(18, 50, 100, 0.72));
+}
+.ice-rule {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, rgba(191, 230, 255, 0.85), transparent);
+}
 @media (min-width: 768px) {
   .anime-card { transition: transform .22s ease, box-shadow .22s ease, border-color .22s ease; }
-  .anime-card:hover { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.35); }
+  .anime-card:hover { transform: translateY(-4px); box-shadow: 0 22px 48px rgba(0,0,0,.34), inset 0 1px 0 rgba(255,255,255,.35); border-color: rgba(191, 230, 255, 0.75); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }

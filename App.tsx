@@ -252,7 +252,7 @@ export default function App() {
         {/* TOP BAR — small logo */}
         <div className="sticky top-[var(--safe-area-inset-top)] z-30 mt-2 flex items-center justify-between gap-2 rounded-2xl glass px-2 py-2" data-safe-area-sticky-top>
           <div className="flex items-center gap-2">
-            <img src={logoUrl} alt="شعار أوتاكو في القمة" className="h-[52px] w-[120px] shrink-0 rounded-xl border border-white/50 object-cover sm:h-[60px] sm:w-[160px]" />
+            <img src={logoUrl} alt="شعار أوتاكو في القمة" className="h-[52px] w-[52px] shrink-0 rounded-full border border-white/50 object-cover sm:h-[60px] sm:w-[60px]" />
             <div className="leading-tight"><p className="text-[13px] font-black">أوتاكو في القمة</p><p dir="ltr" className="font-en text-[10px] font-bold tracking-widest text-[#bfe6ff]">WINTER 2027</p></div>
           </div>
           <span className="flex items-center gap-1 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-black text-[#071a3a]"><Snowflake className="h-3.5 w-3.5" /> ❄️ شتاء</span>
@@ -291,29 +291,25 @@ export default function App() {
 
         {/* SNOW JOURNEY TIMELINE */}
         {expanded && (
-          <div className="relative mt-7 md:grid md:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4">
-            <div className="absolute bottom-6 right-[18px] top-2 w-[3px] rounded-full bg-gradient-to-b from-white via-[#bfe6ff] to-[#7cc4ff] md:hidden" />
-            <div className="contents md:contents">
-              {filtered.length === 0 && <div className="rounded-3xl border border-dashed border-white/40 p-8 text-center md:col-span-2 lg:col-span-3 xl:col-span-4"><p className="text-lg font-black">مفيش نتيجة مطابقة ❄️</p><p className="mt-2 text-sm text-[#d9ecff]">جرّب كلمة تانية أو اختار «الكل».</p><button onClick={() => { setQuery(""); setActiveFilter("الكل"); }} className="mt-4 min-h-11 rounded-full bg-white px-4 py-2 text-sm font-black text-[#071a3a]">إعادة ضبط القائمة</button></div>}
-              {filtered.map((group) => (
-                <section key={group.date} aria-label={group.date} className="relative mb-7 pr-12 pl-1 md:mb-0 md:px-1">
-                  <span className="absolute right-[5px] top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shadow-[0_0_18px_rgba(255,255,255,.9)] md:hidden">❄️</span>
-                  <div className="date-strip overflow-hidden rounded-2xl px-4 py-3.5 shadow-[0_14px_35px_rgba(0,0,0,.25)]">
-                    <div className="flex items-center justify-between gap-2"><div><p className="flex items-center gap-1.5 text-[11px] font-black tracking-widest"><CalendarDays className="h-4 w-4" /> موعد العرض • RELEASE</p><h2 className="mt-0.5 text-[clamp(1.5rem,6vw,2rem)] font-black leading-none">{group.date}</h2></div><div className="text-left shrink-0"><div className="font-en text-2xl font-bold leading-none">{String(group.items.length).padStart(2, "0")}</div><div className="mt-1 text-[10px] font-black">عمل • TITLES</div></div></div>
-                  </div>
-                  <div className="mt-3 space-y-4">
-                    {group.items.map((anime) => { const isSel = selected.has(anime.title); const open = openSynopsis.has(anime.title); return (
-                      <article key={anime.title} className={`anime-card relative mx-1 rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
-                        <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
-                        <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
-                        <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
-                        <div className="mt-3 flex items-center gap-2"><span className="h-px flex-1 bg-white/30" /><span className="text-[10px] font-black tracking-widest text-[#bfe6ff]">النبذة • SYNOPSIS</span><span className="h-px flex-1 bg-white/30" /></div>
-                        {open ? <p className="mt-2 rounded-xl bg-[#071a3a]/45 px-3 py-3 text-[14px] font-semibold leading-7 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.synopsis}</p> : <p className="mt-2 text-center text-[12px] font-bold text-[#bfe6ff]">النبذة مخفية ❄️</p>}
-                        <div className="mt-3 flex items-center justify-between gap-2">{anime.tag && <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071a3a]">فيلم • MOVIE</span>}<button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[#071a3a]" : "bg-[#dff2ff] text-[#071a3a]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div>
-                      </article>); })}
-                  </div>
-                </section>))}
-            </div>
+          <div className="mt-7 space-y-6 md:space-y-8">
+            {filtered.length === 0 && <div className="rounded-3xl border border-dashed border-white/40 p-8 text-center"><p className="text-lg font-black">مفيش نتيجة مطابقة ❄️</p><p className="mt-2 text-sm text-[#d9ecff]">جرّب كلمة تانية أو اختار «الكل».</p><button onClick={() => { setQuery(""); setActiveFilter("الكل"); }} className="mt-4 min-h-11 rounded-full bg-white px-4 py-2 text-sm font-black text-[#071a3a]">إعادة ضبط القائمة</button></div>}
+            {filtered.map((group) => (
+              <section key={group.date} aria-label={group.date} className="rounded-[28px] border border-white/15 bg-white/[0.03] p-3 sm:p-4 md:p-5">
+                <div className="date-strip overflow-hidden rounded-2xl px-4 py-3.5 shadow-[0_14px_35px_rgba(0,0,0,.25)]">
+                  <div className="flex items-center justify-between gap-2"><div><p className="flex items-center gap-1.5 text-[11px] font-black tracking-widest"><CalendarDays className="h-4 w-4" /> موعد العرض • RELEASE</p><h2 className="mt-0.5 text-[clamp(1.5rem,6vw,2rem)] font-black leading-none">{group.date}</h2></div><div className="text-left shrink-0"><div className="font-en text-2xl font-bold leading-none">{String(group.items.length).padStart(2, "0")}</div><div className="mt-1 text-[10px] font-black">عمل • TITLES</div></div></div>
+                </div>
+                <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+                  {group.items.map((anime) => { const isSel = selected.has(anime.title); const open = openSynopsis.has(anime.title); return (
+                    <article key={anime.title} className={`anime-card relative rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
+                      <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
+                      <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
+                      <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
+                      <div className="mt-3 flex items-center gap-2"><span className="h-px flex-1 bg-white/30" /><span className="text-[10px] font-black tracking-widest text-[#bfe6ff]">النبذة • SYNOPSIS</span><span className="h-px flex-1 bg-white/30" /></div>
+                      {open ? <p className="mt-2 rounded-xl bg-[#071a3a]/45 px-3 py-3 text-[14px] font-semibold leading-7 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.synopsis}</p> : <p className="mt-2 text-center text-[12px] font-bold text-[#bfe6ff]">النبذة مخفية ❄️</p>}
+                      <div className="mt-3 flex items-center justify-between gap-2">{anime.tag && <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071a3a]">فيلم • MOVIE</span>}<button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[#071a3a]" : "bg-[#dff2ff] text-[#071a3a]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div>
+                    </article>); })}
+                </div>
+              </section>))}
           </div>
         )}
 
