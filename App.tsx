@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Search, ChevronDown, Star, X, Trash2, Check, Snowflake, Eye, Download, Share2, Sparkles, CalendarDays } from "lucide-react";
-import logoUrl from "container:///mnt/data/src/assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg";
-import watermarkUrl from "container:///mnt/data/src/assets/4e206c56ec941935-logo_transparent.png";
+import logoUrl from "./assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg";
+import watermarkUrl from "./assets/logo_transparent.png";
 
 type Anime = { title: string; genre: string; synopsis: string; tag?: string };
 type Group = { date: string; short: string; items: Anime[] };
@@ -101,11 +101,30 @@ const FILTERS = ["الكل", "أفلام", "مواسم جديدة", "أكشن", 
 const TOP5_TITLES = ["Spirit Circle", "THE ONE PIECE", "One-Punch Man Season 3 Part 2", "Shangri-La Frontier Season 3", "SAKAMOTO DAYS Season 2"];
 type SelectedDetail = Anime & { date: string };
 
-async function callApi(action: string, args: Record<string, unknown>) {
-  const res = await fetch("actions", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ action, args }) });
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok || json.error) throw new Error(json.error || `تعذّر الحفظ (${res.status})`);
-  return json.data;
+type StoredRecord = { id: string; value: { titles?: unknown }; idempotency_key?: string };
+type StorageResult = { records?: StoredRecord[]; id?: string };
+
+async function callApi(action: string, args: Record<string, unknown>): Promise<StorageResult> {
+  const storageKey = `winter-anime:${String(args.collection ?? COLLECTION)}`;
+  const records = JSON.parse(localStorage.getItem(storageKey) ?? "[]") as StoredRecord[];
+  if (action === "records.list") return { records };
+  if (action === "records.create") {
+    const idempotencyKey = String(args.idempotency_key ?? "");
+    const existing = records.find((record) => record.idempotency_key === idempotencyKey);
+    if (existing) return { id: existing.id };
+    const id = typeof crypto.randomUUID === "function" ? crypto.randomUUID() : `${Date.now()}-${Math.random()}`;
+    records.push({ id, value: args.value as StoredRecord["value"], idempotency_key: idempotencyKey });
+    localStorage.setItem(storageKey, JSON.stringify(records));
+    return { id };
+  }
+  if (action === "records.replace") {
+    const index = records.findIndex((record) => record.id === args.id);
+    if (index < 0) throw new Error("تعذّر العثور على الاختيارات المحفوظة");
+    records[index] = { ...records[index], value: args.value as StoredRecord["value"] };
+    localStorage.setItem(storageKey, JSON.stringify(records));
+    return {};
+  }
+  throw new Error(`إجراء غير معروف: ${action}`);
 }
 function loadImage(src: string): Promise<HTMLImageElement> {
   return new Promise((resolve, reject) => { const img = new Image(); img.crossOrigin = "anonymous"; img.onload = () => resolve(img); img.onerror = () => reject(new Error("logo failed")); img.src = src; });
@@ -126,6 +145,8 @@ export default function App() {
   const [recordId, setRecordId] = useState<string | null>(null);
   const [saveState, setSaveState] = useState<"loading" | "saved" | "saving" | "offline" | "error" | "idle">("loading");
   const recordIdRef = useRef<string | null>(null);
+  const pendingSelectionRef = useRef<Set<string> | null>(null);
+  const persistingRef = useRef(false);
   recordIdRef.current = recordId;
 
   useEffect(() => {
@@ -148,17 +169,31 @@ export default function App() {
     return () => { cancelled = true; };
   }, []);
 
-  const persistSelection = async (next: Set<string>) => {
-    const ordered: string[] = [];
-    groups.forEach((g) => g.items.forEach((it) => { if (next.has(it.title)) ordered.push(it.title); }));
-    setSaveState("saving");
-    try {
-      if (!recordIdRef.current) {
-        const created = await callApi("records.create", { collection: COLLECTION, value: { titles: ordered }, idempotency_key: "winter2027-picks-v1" });
-        setRecordId(created.id);
-      } else await callApi("records.replace", { collection: COLLECTION, id: recordIdRef.current, value: { titles: ordered } });
-      setSaveState("saved");
-    } catch { setSaveState("error"); showToast("ما اتحفظتش — جرّب تاني"); }
+  const persistSelection = (next: Set<string>) => {
+    pendingSelectionRef.current = new Set(next);
+    if (persistingRef.current) return;
+    persistingRef.current = true;
+    void (async () => {
+      while (pendingSelectionRef.current) {
+        const pending = pendingSelectionRef.current;
+        pendingSelectionRef.current = null;
+        const ordered: string[] = [];
+        groups.forEach((g) => g.items.forEach((it) => { if (pending.has(it.title)) ordered.push(it.title); }));
+        setSaveState("saving");
+        try {
+          if (!recordIdRef.current) {
+            const created = await callApi("records.create", { collection: COLLECTION, value: { titles: ordered }, idempotency_key: "winter2027-picks-v1" });
+            if (!created.id) throw new Error("تعذّر إنشاء سجل الاختيارات");
+            recordIdRef.current = created.id;
+            setRecordId(created.id);
+          } else await callApi("records.replace", { collection: COLLECTION, id: recordIdRef.current, value: { titles: ordered } });
+          if (!pendingSelectionRef.current) setSaveState("saved");
+        } catch {
+          if (!pendingSelectionRef.current) { setSaveState("error"); showToast("ما اتحفظتش — جرّب تاني"); }
+        }
+      }
+      persistingRef.current = false;
+    })();
   };
 
   const showToast = (msg: string) => { setToast(msg); setTimeout(() => setToast(null), 2800); };
@@ -191,7 +226,10 @@ export default function App() {
     if (count > 14) { cols = 2; if (count <= 20) { fontTitle = 23; fontMeta = 15; lineH = 66; } else if (count <= 26) { fontTitle = 19; fontMeta = 13; lineH = 56; } else { fontTitle = 18; fontMeta = 12; lineH = 52; } }
     else if (count <= 8) { fontTitle = 32; fontMeta = 20; lineH = 92; } else { fontTitle = 28; fontMeta = 18; lineH = 78; }
     const startY = 410;
-    list.forEach((anime, idx) => { const isSecond = cols === 2 && idx >= Math.ceil(count / 2); const colIdx = cols === 1 ? 0 : (isSecond ? 1 : 0); const rowIdx = cols === 1 ? idx : (isSecond ? idx - Math.ceil(count / 2) : idx); const x = colIdx === 0 ? 72 : 552; const y = startY + rowIdx * lineH; if (y > 1600) return; const dt = anime.title.length > (cols === 1 ? 52 : 32) ? anime.title.slice(0, cols === 1 ? 52 : 32) + "…" : anime.title; const gt = anime.genre.length > (cols === 1 ? 38 : 26) ? anime.genre.slice(0, cols === 1 ? 38 : 26) + "…" : anime.genre; ctx.textAlign = "left"; ctx.fillStyle = "#bfe6ff"; ctx.font = `800 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${idx + 1}`, x, y - 6, 30); ctx.fillStyle = "#fff"; ctx.font = `800 ${fontTitle}px Cairo, sans-serif`; ctx.fillText(dt, x + 34, y, cols === 1 ? 860 : 420); ctx.fillStyle = "#dff2ff"; ctx.font = `600 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${anime.date} • ${gt}`, x + 34, y + fontTitle * 0.7, cols === 1 ? 860 : 420); });
+    const rowCount = cols === 1 ? count : Math.ceil(count / 2);
+    const maxContentHeight = 1240;
+    if (rowCount > 1) lineH = Math.min(lineH, maxContentHeight / rowCount);
+    list.forEach((anime, idx) => { const isSecond = cols === 2 && idx >= Math.ceil(count / 2); const colIdx = cols === 1 ? 0 : (isSecond ? 1 : 0); const rowIdx = cols === 1 ? idx : (isSecond ? idx - Math.ceil(count / 2) : idx); const x = colIdx === 0 ? 72 : 552; const y = startY + rowIdx * lineH; const dt = anime.title.length > (cols === 1 ? 52 : 32) ? anime.title.slice(0, cols === 1 ? 52 : 32) + "…" : anime.title; const gt = anime.genre.length > (cols === 1 ? 38 : 26) ? anime.genre.slice(0, cols === 1 ? 38 : 26) + "…" : anime.genre; ctx.textAlign = "left"; ctx.fillStyle = "#bfe6ff"; ctx.font = `800 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${idx + 1}`, x, y - 6, 30); ctx.fillStyle = "#fff"; ctx.font = `800 ${fontTitle}px Cairo, sans-serif`; ctx.fillText(dt, x + 34, y, cols === 1 ? 860 : 420); ctx.fillStyle = "#dff2ff"; ctx.font = `600 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${anime.date} • ${gt}`, x + 34, y + fontTitle * 0.7, cols === 1 ? 860 : 420); });
     if (watermarkImg) { ctx.save(); ctx.globalAlpha = 0.10; const size = 620, ratio = watermarkImg.width / watermarkImg.height; let dw = size, dh = size / ratio; if (dh > size) { dh = size; dw = size * ratio; } ctx.translate(W / 2, 980); ctx.rotate(-0.32); ctx.drawImage(watermarkImg, -dw / 2, -dh / 2, dw, dh); ctx.restore(); }
     ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.beginPath(); ctx.moveTo(80, 1710); ctx.lineTo(W - 80, 1710); ctx.stroke(); ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "800 26px Cairo, sans-serif"; ctx.fillText(`${total} عمل في شتاء 2027 • Winter 2027`, W / 2, 1752); ctx.fillStyle = "#bfe6ff"; ctx.font = "700 20px Cairo, sans-serif"; ctx.fillText("otaku fel qema  •  أوتاكو في القمة", W / 2, 1858); ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.font = "600 14px Cairo, sans-serif"; ctx.fillText("أنشئت من موقع جدول شتاء 2027", W / 2, 1886);
     const dataUrl = canvas.toDataURL("image/png"); const blob: Blob = await new Promise((res) => canvas.toBlob((b) => res(b as Blob), "image/png", 0.92) as unknown as Blob); return { dataUrl, blob };
