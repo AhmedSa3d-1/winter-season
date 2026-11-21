@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Search, ChevronDown, Star, X, Trash2, Check, Snowflake, Eye, Download, Share2, Sparkles, CalendarDays } from "lucide-react";
-import logoUrl from "./assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg";
+import logoUrl from "./assets/logo.png";
 import watermarkUrl from "./assets/logo_transparent.png";
 import animeData from "./src/data/anime.json";
 import siteConfig from "./src/data/site-config.json";
@@ -195,7 +195,7 @@ export default function App() {
 
         <header className="mt-5 text-center md:mx-auto md:max-w-3xl lg:mt-8">
           <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/40 bg-white/15 px-3 py-1.5 text-[11px] font-extrabold text-[var(--accent)] sm:text-xs"><Sparkles className="h-3.5 w-3.5" /> قائمة من الملف فقط • اختار بالنجمة ⭐</span>
-          <h1 className="mt-4 text-[clamp(2.1rem,9vw,4.5rem)] font-black leading-[1.05] drop-shadow-[0_4px_20px_rgba(124,196,255,.5)] sm:mt-6">{season.titleLine1}<br />{season.titleLine2}</h1>
+          <h1 className="mt-4 whitespace-nowrap text-[clamp(1.05rem,5.8vw,4.5rem)] font-black leading-[1.05] drop-shadow-[0_4px_20px_rgba(124,196,255,.5)] sm:mt-6">{season.titleLine1} {season.titleLine2}</h1>
           <p dir="ltr" className="font-en mt-2 text-base font-bold tracking-[0.18em] text-[var(--accent-2)] sm:text-lg">{season.subtitle} - {total} عمل</p>
           <p className="mx-auto mt-3 max-w-[620px] text-[14px] font-bold leading-7 text-[#d9ecff] sm:text-[15px] sm:leading-8">{season.description}</p>
           <div className="ice-rule mx-auto mt-4 max-w-[300px] sm:max-w-[420px]" />
