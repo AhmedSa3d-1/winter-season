@@ -58,18 +58,20 @@ def load_rows(path):
     return parsed
 
 
-def short_label(date: str) -> str:
-    m = re.search(r"(\d{1,2})", date)
-    if m and any(ch.isdigit() for ch in date.split()[0]):
-        return m.group(1).zfill(2)
-    months = {
-        "يناير": "JAN", "فبراير": "FEB", "مارس": "MAR", "أبريل": "APR", "مايو": "MAY", "يونيو": "JUN",
-        "يوليو": "JUL", "أغسطس": "AUG", "سبتمبر": "SEP", "أكتوبر": "OCT", "نوفمبر": "NOV", "ديسمبر": "DEC",
-    }
-    for ar, en in months.items():
+MONTHS = {
+    "يناير": "JAN", "فبراير": "FEB", "مارس": "MAR", "أبريل": "APR", "مايو": "MAY", "يونيو": "JUN",
+    "يوليو": "JUL", "أغسطس": "AUG", "سبتمبر": "SEP", "أكتوبر": "OCT", "نوفمبر": "NOV", "ديسمبر": "DEC",
+}
+
+
+def month_group(date: str) -> tuple[str, str]:
+    for ar, en in MONTHS.items():
         if ar in date:
-            return en[:3]
-    return date[:3]
+            y = re.search(r"(\d{4})", date)
+            label = f"{ar} {y.group(1)}" if y else ar
+            return label, en
+    clean = date.strip() or "موعد غير محدد"
+    return clean, clean[:3]
 
 
 def main():
@@ -84,21 +86,21 @@ def main():
         date = (row.get("موعد الإصدار المتحقق") or row.get("موعد العرض") or "").strip() or "موعد غير محدد"
         if not title:
             continue
+        group_label, group_short = month_group(date)
         genre = row.get("التصنيفات", "").strip().replace("،", "، ")
         genre = re.sub(r"\s*،\s*", "، ", genre)
         synopsis = row.get("النبذة", "").strip()
-        release_type = row.get("نوع الإصدار", "")
+        release_type = row.get("نوع الإصدار", "").strip()
         image = (row.get("رابط الصورة") or row.get("الصورة") or "").strip()
-        tag = "فيلم" if "فيلم" in release_type else ""
-        item = {"title": title, "genre": genre, "synopsis": synopsis}
-        if tag:
-            item["tag"] = tag
+        item = {"title": title, "genre": genre, "synopsis": synopsis, "releaseDate": date}
+        if release_type:
+            item["tag"] = release_type
         if image:
             item["image"] = image
-        g = by_date.get(date)
+        g = by_date.get(group_label)
         if g is None:
-            g = {"date": date, "short": short_label(date), "items": []}
-            by_date[date] = g
+            g = {"date": group_label, "short": group_short, "items": []}
+            by_date[group_label] = g
             groups.append(g)
         g["items"].append(item)
     OUT.parent.mkdir(parents=True, exist_ok=True)

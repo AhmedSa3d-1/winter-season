@@ -4,8 +4,9 @@ import logoUrl from "./assets/logo.png";
 import watermarkUrl from "./assets/logo_transparent.png";
 import animeData from "./src/data/anime.json";
 import siteConfig from "./src/data/site-config.json";
+import top5Data from "./src/data/top5.json";
 
-type Anime = { title: string; genre: string; synopsis: string; tag?: string; image?: string };
+type Anime = { title: string; genre: string; synopsis: string; tag?: string; image?: string; releaseDate?: string };
 type Group = { date: string; short: string; items: Anime[] };
 type SeasonKey = "winter" | "spring" | "summer" | "fall";
 type SeasonTheme = { bg: string; bgDark: string; surface: string; surfaceDark: string; surface2: string; accent: string; accent2: string; sky: string; navy: string; cream: string; muted: string; line: string; scrollbar: string; particle: string[] };
@@ -21,7 +22,7 @@ const groups: Group[] = (animeData as { groups: Group[] }).groups;
 const total = groups.reduce((n, g) => n + g.items.length, 0);
 const COLLECTION = `${season.key}${season.year}_picks`;
 const FILTERS = ["الكل", "أفلام", "مواسم جديدة", "أكشن", "رومانسي", "كوميدي", "إيسيكاي", "فانتازيا"];
-const TOP5_TITLES = ["Spirit Circle", "THE ONE PIECE", "One-Punch Man Season 3 Part 2", "Shangri-La Frontier Season 3", "SAKAMOTO DAYS Season 2"];
+const TOP5_TITLES = ((top5Data as { titles?: unknown }).titles ?? []).filter((t): t is string => typeof t === "string");
 type SelectedDetail = Anime & { date: string };
 
 type StoredRecord = { id: string; value: { titles?: unknown }; idempotency_key?: string };
@@ -156,7 +157,7 @@ export default function App() {
     if (logoImg) {
       const cx = W / 2, cy = 132, rad = 64; ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.clip(); const ratio = logoImg.width / logoImg.height; let dw = rad * 2.2, dh = dw / ratio; if (dh < rad * 2) { dh = rad * 2.2; dw = dh * ratio; } ctx.drawImage(logoImg, cx - dw / 2, cy - dh / 2, dw, dh); ctx.restore(); ctx.strokeStyle = "#ffffff"; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(cx, cy, rad + 3, 0, Math.PI * 2); ctx.stroke();
     }
-    ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "900 46px Cairo, sans-serif"; ctx.fillText(season.canvasTitle, W / 2, 258); ctx.fillStyle = theme.accent2; ctx.font = "800 30px Cairo, sans-serif"; ctx.fillText(season.canvasSubtitle, W / 2, 300); ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.moveTo(W * 0.18, 328); ctx.lineTo(W * 0.82, 328); ctx.stroke(); ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.font = "700 22px Cairo, sans-serif"; ctx.fillText(`اخترت ${list.length} من ${total} عمل`, W / 2, 362);
+    ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "900 46px Changa, sans-serif"; ctx.fillText(season.canvasTitle, W / 2, 258); ctx.fillStyle = theme.accent2; ctx.font = "800 30px Changa, sans-serif"; ctx.fillText(season.canvasSubtitle, W / 2, 300); ctx.strokeStyle = "rgba(255,255,255,.6)"; ctx.beginPath(); ctx.moveTo(W * 0.18, 328); ctx.lineTo(W * 0.82, 328); ctx.stroke(); ctx.fillStyle = "rgba(255,255,255,.9)"; ctx.font = "700 22px Changa, sans-serif"; ctx.fillText(`اخترت ${list.length} من ${total} عمل`, W / 2, 362);
     const count = list.length; let fontTitle = 30, fontMeta = 18, lineH = 84, cols = 1;
     if (count > 14) { cols = 2; if (count <= 20) { fontTitle = 23; fontMeta = 15; lineH = 66; } else if (count <= 26) { fontTitle = 19; fontMeta = 13; lineH = 56; } else { fontTitle = 18; fontMeta = 12; lineH = 52; } }
     else if (count <= 8) { fontTitle = 32; fontMeta = 20; lineH = 92; } else { fontTitle = 28; fontMeta = 18; lineH = 78; }
@@ -164,9 +165,9 @@ export default function App() {
     const rowCount = cols === 1 ? count : Math.ceil(count / 2);
     const maxContentHeight = 1240;
     if (rowCount > 1) lineH = Math.min(lineH, maxContentHeight / rowCount);
-    list.forEach((anime, idx) => { const isSecond = cols === 2 && idx >= Math.ceil(count / 2); const colIdx = cols === 1 ? 0 : (isSecond ? 1 : 0); const rowIdx = cols === 1 ? idx : (isSecond ? idx - Math.ceil(count / 2) : idx); const x = colIdx === 0 ? 72 : 552; const y = startY + rowIdx * lineH; const dt = anime.title.length > (cols === 1 ? 52 : 32) ? anime.title.slice(0, cols === 1 ? 52 : 32) + "…" : anime.title; const gt = anime.genre.length > (cols === 1 ? 38 : 26) ? anime.genre.slice(0, cols === 1 ? 38 : 26) + "…" : anime.genre; ctx.textAlign = "left"; ctx.fillStyle = theme.accent2; ctx.font = `800 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${idx + 1}`, x, y - 6, 30); ctx.fillStyle = "#fff"; ctx.font = `800 ${fontTitle}px Cairo, sans-serif`; ctx.fillText(dt, x + 34, y, cols === 1 ? 860 : 420); ctx.fillStyle = theme.accent; ctx.font = `600 ${fontMeta}px Cairo, sans-serif`; ctx.fillText(`${anime.date} • ${gt}`, x + 34, y + fontTitle * 0.7, cols === 1 ? 860 : 420); });
+    list.forEach((anime, idx) => { const isSecond = cols === 2 && idx >= Math.ceil(count / 2); const colIdx = cols === 1 ? 0 : (isSecond ? 1 : 0); const rowIdx = cols === 1 ? idx : (isSecond ? idx - Math.ceil(count / 2) : idx); const x = colIdx === 0 ? 72 : 552; const y = startY + rowIdx * lineH; const dt = anime.title.length > (cols === 1 ? 52 : 32) ? anime.title.slice(0, cols === 1 ? 52 : 32) + "…" : anime.title; const gt = anime.genre.length > (cols === 1 ? 38 : 26) ? anime.genre.slice(0, cols === 1 ? 38 : 26) + "…" : anime.genre; ctx.textAlign = "left"; ctx.fillStyle = theme.accent2; ctx.font = `800 ${fontMeta}px Changa, sans-serif`; ctx.fillText(`${idx + 1}`, x, y - 6, 30); ctx.fillStyle = "#fff"; ctx.font = `800 ${fontTitle}px Changa, sans-serif`; ctx.fillText(dt, x + 34, y, cols === 1 ? 860 : 420); ctx.fillStyle = theme.accent; ctx.font = `600 ${fontMeta}px Changa, sans-serif`; ctx.fillText(`${anime.date} • ${gt}`, x + 34, y + fontTitle * 0.7, cols === 1 ? 860 : 420); });
     if (watermarkImg) { ctx.save(); ctx.globalAlpha = 0.10; const size = 620, ratio = watermarkImg.width / watermarkImg.height; let dw = size, dh = size / ratio; if (dh > size) { dh = size; dw = size * ratio; } ctx.translate(W / 2, 980); ctx.rotate(-0.32); ctx.drawImage(watermarkImg, -dw / 2, -dh / 2, dw, dh); ctx.restore(); }
-    ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.beginPath(); ctx.moveTo(80, 1710); ctx.lineTo(W - 80, 1710); ctx.stroke(); ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "800 26px Cairo, sans-serif"; ctx.fillText(`${total} عمل في ${season.name} ${season.year} • ${season.nameEn.toUpperCase()} ${season.year}`, W / 2, 1752); ctx.fillStyle = theme.accent2; ctx.font = "700 20px Cairo, sans-serif"; ctx.fillText("otaku fel qema  •  أوتاكو في القمة", W / 2, 1858); ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.font = "600 14px Cairo, sans-serif"; ctx.fillText(season.canvasFooter, W / 2, 1886);
+    ctx.strokeStyle = "rgba(255,255,255,.45)"; ctx.beginPath(); ctx.moveTo(80, 1710); ctx.lineTo(W - 80, 1710); ctx.stroke(); ctx.textAlign = "center"; ctx.fillStyle = "#fff"; ctx.font = "800 26px Changa, sans-serif"; ctx.fillText(`${total} عمل في ${season.name} ${season.year} • ${season.nameEn.toUpperCase()} ${season.year}`, W / 2, 1752); ctx.fillStyle = theme.accent2; ctx.font = "700 20px Changa, sans-serif"; ctx.fillText("otaku fel qema  •  أوتاكو في القمة", W / 2, 1858); ctx.fillStyle = "rgba(255,255,255,.6)"; ctx.font = "600 14px Changa, sans-serif"; ctx.fillText(season.canvasFooter, W / 2, 1886);
     const dataUrl = canvas.toDataURL("image/png"); const blob: Blob = await new Promise((res) => canvas.toBlob((b) => res(b as Blob), "image/png", 0.92) as unknown as Blob); return { dataUrl, blob };
   };
   const handleCreateImage = async () => { if (!selected.size) { showToast("اختار عمل واحد على الأقل ⭐"); return; } setGenerating(true); try { const { dataUrl, blob } = await buildCanvas(selectedList); setGeneratedUrl(dataUrl); setGeneratedBlob(blob); setShowModal(true); } catch { showToast("حصلت مشكلة في إنشاء الصورة، جرّب تاني"); } finally { setGenerating(false); } };
@@ -206,11 +207,20 @@ export default function App() {
           <div className="flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-black"><span className="text-2xl">🏆</span> Top 5 سوايب</h2><span className="text-[11px] font-bold text-[#bfe6ff]">اسحب يمين وشمال ←</span></div>
           <div className="no-scrollbar -mx-1 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:gap-4">
             {top5.map((a, i) => { const isSel = selected.has(a.title); return (
-              <article key={a.title} className="anime-card mx-1 w-[230px] shrink-0 snap-center rounded-3xl p-4 sm:w-[280px] lg:w-[300px]">
-                <div className="flex items-center justify-between"><span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#071a3a]">#{i + 1} • TOP</span><button onClick={() => toggle(a.title)} aria-label={isSel ? "إزالة" : "إضافة"} className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${isSel ? "bg-white text-[#071a3a]" : "border border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
-                <p className="mt-3 text-[11px] font-bold text-[#bfe6ff]">{a.date} • {a.genre}</p>
-                <h3 dir="ltr" className="mt-1 text-left text-[19px] font-bold leading-snug [overflow-wrap:anywhere]">{a.title}</h3>
-                <p className="mt-2 text-[12px] font-semibold leading-6 text-[#e6f5ff] [overflow-wrap:anywhere]">{a.synopsis.length > 110 ? a.synopsis.slice(0, 110) + "…" : a.synopsis}</p>
+              <article key={a.title} className={`anime-card relative mx-1 w-[230px] shrink-0 snap-center overflow-hidden rounded-3xl p-4 sm:w-[280px] lg:w-[300px] ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
+                {a.image && (
+                  <>
+                    <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${a.image})` }} aria-hidden="true" />
+                    <div className="absolute inset-0 bg-gradient-to-b from-black/25 via-black/55 to-black/90" aria-hidden="true" />
+                    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/80 via-black/35 to-transparent" aria-hidden="true" />
+                  </>
+                )}
+                <div className="relative z-10 [text-shadow:0_2px_10px_rgba(0,0,0,.75)]">
+                  <div className="flex items-center justify-between"><span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[var(--navy)]">#{i + 1} • TOP</span><button onClick={() => toggle(a.title)} aria-label={isSel ? "إزالة" : "إضافة"} className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${isSel ? "bg-white text-[var(--navy)]" : "border border-white/50 text-white bg-black/15"}`}>{isSel ? "★" : "☆"}</button></div>
+                  <p className="mt-3 text-[11px] font-bold text-[var(--accent-2)]">{a.releaseDate ?? a.date} • {a.genre}</p>
+                  <h3 dir="ltr" className="mt-1 text-center text-[19px] font-bold leading-snug [overflow-wrap:anywhere]">{a.title}</h3>
+                  <p className="mt-2 text-[12px] font-semibold leading-6 text-[#e6f5ff] [overflow-wrap:anywhere]">{a.synopsis.length > 110 ? a.synopsis.slice(0, 110) + "…" : a.synopsis}</p>
+                </div>
               </article>); })}
           </div>
         </section>
@@ -243,12 +253,12 @@ export default function App() {
                         </>
                       )}
                       <div className="relative z-10">
-                        <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white bg-black/15"}`}>{isSel ? "★" : "☆"}</button></div>
-                        <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
+                         <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[var(--navy)]">{anime.releaseDate ?? group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[var(--navy)]" : "border-white/50 text-white bg-black/15"}`}>{isSel ? "★" : "☆"}</button></div>
+                        <h3 dir="ltr" className="mt-3 text-center text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
                         <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
                         <div className="mt-3 flex items-center gap-2"><span className="h-px flex-1 bg-white/30" /><span className="text-[10px] font-black tracking-widest text-[#bfe6ff]">النبذة • SYNOPSIS</span><span className="h-px flex-1 bg-white/30" /></div>
                         {open ? <p className="mt-2 rounded-xl bg-[var(--navy)]/55 px-3 py-3 text-[14px] font-semibold leading-7 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.synopsis}</p> : <p className="mt-2 text-center text-[12px] font-bold text-[var(--accent-2)]">النبذة مخفية {season.emoji}</p>}
-                        <div className="mt-3 flex items-center justify-between gap-2">{anime.tag && <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[#071a3a]">فيلم • MOVIE</span>}<button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black backdrop-blur-sm"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[#071a3a]" : "bg-[#dff2ff] text-[#071a3a]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div>
+                        <div className="mt-3 flex items-center justify-between gap-2">{anime.tag ? <span className="rounded-full bg-white px-3 py-1 text-xs font-black text-[var(--navy)]">{anime.tag}</span> : <span />}<div className="flex items-center gap-2"><button onClick={() => toggleSynopsis(anime.title)} className="flex items-center gap-1.5 rounded-full border border-white/40 bg-white/10 px-3.5 py-2 text-xs font-black backdrop-blur-sm"><Eye className="h-3.5 w-3.5" /> {open ? "إخفاء النبذة" : "اقرأ النبذة"}</button><button onClick={() => toggle(anime.title)} className={`flex items-center gap-1.5 rounded-full px-3.5 py-2 text-xs font-black ${isSel ? "bg-white text-[var(--navy)]" : "bg-[var(--accent)] text-[var(--navy)]"}`}>{isSel ? <><Check className="h-3.5 w-3.5" /> تم الاختيار</> : <><Star className="h-3.5 w-3.5" /> اختر للقائمة</>}</button></div></div>
                       </div>
                     </article>); })}
                 </div>

@@ -27,6 +27,7 @@
     "App.tsx",
     "main.tsx",
     "src/data/anime.json",
-    "src/data/site-config.json"
+    "src/data/site-config.json",
+    "src/data/top5.json"
   ]
 }
