@@ -271,7 +271,7 @@ export default function App() {
           <div className="flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-black"><span className="text-2xl">🏆</span> Top 5 سوايب</h2><span className="text-[11px] font-bold text-[#bfe6ff]">اسحب يمين وشمال ←</span></div>
           <div className="no-scrollbar -mx-1 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:gap-4">
             {top5.map((a, i) => { const isSel = selected.has(a.title); return (
-              <article key={a.title} className="anime-card w-[230px] shrink-0 snap-center rounded-3xl p-4 sm:w-[280px] lg:w-[300px]">
+              <article key={a.title} className="anime-card mx-1 w-[230px] shrink-0 snap-center rounded-3xl p-4 sm:w-[280px] lg:w-[300px]">
                 <div className="flex items-center justify-between"><span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#071a3a]">#{i + 1} • TOP</span><button onClick={() => toggle(a.title)} aria-label={isSel ? "إزالة" : "إضافة"} className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${isSel ? "bg-white text-[#071a3a]" : "border border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
                 <p className="mt-3 text-[11px] font-bold text-[#bfe6ff]">{a.date} • {a.genre}</p>
                 <h3 dir="ltr" className="mt-1 text-left text-[19px] font-bold leading-snug [overflow-wrap:anywhere]">{a.title}</h3>
@@ -296,14 +296,14 @@ export default function App() {
             <div className="contents md:contents">
               {filtered.length === 0 && <div className="rounded-3xl border border-dashed border-white/40 p-8 text-center md:col-span-2 lg:col-span-3 xl:col-span-4"><p className="text-lg font-black">مفيش نتيجة مطابقة ❄️</p><p className="mt-2 text-sm text-[#d9ecff]">جرّب كلمة تانية أو اختار «الكل».</p><button onClick={() => { setQuery(""); setActiveFilter("الكل"); }} className="mt-4 min-h-11 rounded-full bg-white px-4 py-2 text-sm font-black text-[#071a3a]">إعادة ضبط القائمة</button></div>}
               {filtered.map((group) => (
-                <section key={group.date} aria-label={group.date} className="relative mb-7 pr-12 md:mb-0 md:pr-0">
+                <section key={group.date} aria-label={group.date} className="relative mb-7 pr-12 pl-1 md:mb-0 md:px-1">
                   <span className="absolute right-[5px] top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shadow-[0_0_18px_rgba(255,255,255,.9)] md:hidden">❄️</span>
                   <div className="date-strip overflow-hidden rounded-2xl px-4 py-3.5 shadow-[0_14px_35px_rgba(0,0,0,.25)]">
                     <div className="flex items-center justify-between gap-2"><div><p className="flex items-center gap-1.5 text-[11px] font-black tracking-widest"><CalendarDays className="h-4 w-4" /> موعد العرض • RELEASE</p><h2 className="mt-0.5 text-[clamp(1.5rem,6vw,2rem)] font-black leading-none">{group.date}</h2></div><div className="text-left shrink-0"><div className="font-en text-2xl font-bold leading-none">{String(group.items.length).padStart(2, "0")}</div><div className="mt-1 text-[10px] font-black">عمل • TITLES</div></div></div>
                   </div>
                   <div className="mt-3 space-y-4">
                     {group.items.map((anime) => { const isSel = selected.has(anime.title); const open = openSynopsis.has(anime.title); return (
-                      <article key={anime.title} className={`anime-card relative rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
+                      <article key={anime.title} className={`anime-card relative mx-1 rounded-3xl p-4 ${isSel ? "ring-2 ring-white shadow-[0_0_28px_rgba(255,255,255,.35)]" : ""}`}>
                         <div className="flex items-start justify-between gap-2"><span className="rounded-full bg-white/90 px-2.5 py-1 text-[11px] font-black text-[#071a3a]">{group.date}</span><button onClick={() => toggle(anime.title)} aria-label={isSel ? "إزالة من القائمة" : "إضافة للقائمة"} className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border text-[18px] ${isSel ? "bg-white text-[#071a3a]" : "border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
                         <h3 dir="ltr" className="mt-3 text-left text-[clamp(1.3rem,5vw,1.7rem)] font-bold leading-[1.1] [overflow-wrap:anywhere]">{anime.title}</h3>
                         <p className="mt-2 text-center text-[14px] font-extrabold leading-6 text-[#eaf7ff] [overflow-wrap:anywhere]">{anime.genre}</p>
