@@ -9,7 +9,17 @@ OUT = ROOT / "src" / "data" / "anime.json"
 NS = {"m": "http://schemas.openxmlformats.org/spreadsheetml/2006/main"}
 
 
-def cell_val(cell):
+def load_shared_strings(z):
+    if "xl/sharedStrings.xml" not in z.namelist():
+        return []
+    root = ET.fromstring(z.read("xl/sharedStrings.xml"))
+    strings = []
+    for si in root.findall("m:si", NS):
+        strings.append("".join(x.text or "" for x in si.findall(".//m:t", NS)))
+    return strings
+
+
+def cell_val(cell, shared_strings):
     t = cell.attrib.get("t")
     v = cell.find("m:v", NS)
     if v is None:
@@ -17,11 +27,16 @@ def cell_val(cell):
         if is_ is None:
             return ""
         return "".join(x.text or "" for x in is_.findall(".//m:t", NS))
-    return v.text or ""
+    val = v.text or ""
+    if t == "s":
+        idx = int(val)
+        return shared_strings[idx] if idx < len(shared_strings) else val
+    return val
 
 
 def load_rows(path):
     with zipfile.ZipFile(path) as z:
+        shared_strings = load_shared_strings(z)
         sheet = [n for n in z.namelist() if n.startswith("xl/worksheets/sheet")][0]
         root = ET.fromstring(z.read(sheet))
     rows = root.findall(".//m:sheetData/m:row", NS)
@@ -32,7 +47,7 @@ def load_rows(path):
         for c in row.findall("m:c", NS):
             ref = c.attrib.get("r", "")
             col = re.sub(r"\d", "", ref)
-            cells[col] = cell_val(c).strip()
+            cells[col] = cell_val(c, shared_strings).strip()
         if i == 0:
             cols = sorted(cells.keys(), key=lambda x: (len(x), x))
             headers = [(col, cells[col]) for col in cols]
