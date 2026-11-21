@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run build:data && tsc --noEmit && vite build",
+    "build:data": "python3 scripts/build_anime_data.py",
     "preview": "vite preview"
   },
   "dependencies": {

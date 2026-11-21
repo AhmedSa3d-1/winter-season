@@ -7,9 +7,21 @@ npm install
 npm run dev
 ```
 
-## Publish to GitHub Pages
-The GitHub Actions workflow in `.github/workflows/deploy.yml` builds and deploys this app when you push to `main`. In the repository settings, open **Settings → Pages** and set the build and deployment source to **GitHub Actions**.
+## تحديث بيانات الأنميات
 
-The workflow is configured for this repository's project-site URL (`/winter-season/`). After the first successful run, GitHub Pages will show the published URL under **Settings → Pages**.
+مصدر البيانات الأساسي الآن هو ملف Excel داخل المستودع:
 
-Selections are saved in this browser's local storage. GitHub Pages is static hosting and does not provide the server-side `actions` API, so saved lists are local to each browser rather than shared between users or devices.
+- `data/anime.xlsx`
+
+عند تعديل الملف، يمكن توليد بيانات الموقع JSON محليًا بالأمر:
+
+```bash
+npm run build:data
+```
+
+أثناء النشر على GitHub Pages، يقوم workflow بتشغيل نفس الخطوة تلقائيًا قبل build، لذلك تعديل `data/anime.xlsx` داخل GitHub يكفي لتحديث القوائم بعد نجاح الـ workflow.
+
+- السكربت: `scripts/build_anime_data.py`
+- الملف المولد: `src/data/anime.json`
+- الأعمدة المتوقعة: `م`, `اسم الأنمي`, `موعد الإصدار المتحقق`, `حالة الموعد`, `درجة التأكد`, `نوع الإصدار`, `التصنيفات`, `مصدر العمل`, `النبذة`, `تفاصيل العرض الأصلية`, `الحلقات`, `صيغة العرض`, `ملاحظات التحقق`, `مصدر التحقق`, `رابط الصورة`, `طبيعة النبذة`
+

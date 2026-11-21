@@ -2,98 +2,12 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Search, ChevronDown, Star, X, Trash2, Check, Snowflake, Eye, Download, Share2, Sparkles, CalendarDays } from "lucide-react";
 import logoUrl from "./assets/1a3e951f2b30e0fe-photo1746480554737042166.jpeg";
 import watermarkUrl from "./assets/logo_transparent.png";
+import animeData from "./src/data/anime.json";
 
 type Anime = { title: string; genre: string; synopsis: string; tag?: string };
 type Group = { date: string; short: string; items: Anime[] };
 
-const groups: Group[] = [
-  { date: "ديسمبر 2026", short: "DEC", items: [
-    { title: "The Apothecary Diaries: The Late Lady's Treasure", genre: "دراما، تاريخي، طبي، غموض", synopsis: "لغز جديد حول كنز سري مخبأ في مدينة على الماء، في مغامرة شتوية دافئة لماو ماو. - فيلم", tag: "فيلم" },
-    { title: "WONDERING MATE", genre: "خيال علمي", synopsis: "آكو، أفاتار فتاة ثانوية تحلم أن تصبح إنسانة، وبيت، أفاتار لا يريد أن يصبح إنسانًا. قصة أفاتارين قد يتغيران في عالم لم يكن من المفترض أن يتغير." },
-    { title: "Disney Twisted-Wonderland The Animation Season 2: Episode of Savanaclaw", genre: "فانتازيا، إيسيكاي، مدرسي", synopsis: "اقتباس أنمي للعبة موبايل ديزني اليابانية، في فصل جديد داخل أكاديمية نايت ريفن. - موسم جديد" },
-    { title: "The Reincarnated Elf Left on a Journey to Master His Magic...", genre: "مغامرة، فانتازيا، إيسيكاي، تناسخ", synopsis: "موظف عمره 30 سنة يموت في حادثة ويولد من جديد إلفًا اسمه ليز. الإلف يعيش حتى 1000 سنة، فيقرر أن يغادر البيت ويعيش حياة كاملة ويتقن السحر." },
-    { title: "Spirit Circle", genre: "أكشن، مغامرة، كوميدي، دراما، رومانسي، تناسخ", synopsis: "فوتا أوكيا، فتى عمره 14 سنة يرى الأشباح، معجب بزميلته الجديدة كوكو إيشيجامي. كوكو تخبره أن العلامة على خده لعنة صنعتها في حياة سابقة، فيبدأ في اكتشاف علاقتهما عبر الحيوات الماضية." },
-  ]},
-  { date: "4 يناير 2027", short: "04", items: [
-    { title: "Haru to Gen ~70-sai, Hajimete no Kosodate~", genre: "حياة يومية، دراما", synopsis: "زوجان في السبعين يبدآن لأول مرة رحلة تربية طفل، في قصة إنسانية هادئة عن العائلة والبدايات الجديدة. - عمل قصير" },
-    { title: "Welcome to Demon School! Iruma-kun: IruMafia Edition", genre: "فانتازيا، جريمة منظمة", synopsis: "إيروما، فتى فقير وطيب، يساعد رجلًا عجوزًا مصابًا ويكتشف أنه دون سوليفان، زعيم مافيا بابيل. دون يأخذه ويطلب منه أن يصبح حفيده ووريث عصابة شياطين." },
-    { title: "Shin Oishinbo", genre: "كوميدي، أكل، حياة يومية", synopsis: "عودة جديدة لعالم الطعام والحياة اليومية، مع أطباق شتوية ونكهات تجمع الناس حول مائدة واحدة." },
-    { title: "Magical Buffs: The Support Caster is Stronger Than He Realized!", genre: "أكشن، فانتازيا", synopsis: "ويم، ساحر دعم يقوّي حلفاءه بتعاويذه. فريقه يطرده لأنه يرى أن سحر الدعم بلا فائدة في القتال، فيبدأ من جديد وحده ويثبت أن الدعم هو أقوى سحر." },
-  ]},
-  { date: "5 يناير 2027", short: "05", items: [
-    { title: "Mera x Death: The Strange Love Between Me and the Reaper", genre: "أكشن، فانتازيا", synopsis: "علاقة غريبة بين فتى وحاصدة أرواح، بين الخطر والمشاعر، في قصة تجمع الأكشن بالرومانسية السوداوية." },
-  ]},
-  { date: "6 يناير 2027", short: "06", items: [
-    { title: "Wanpaku! Touken Ranbu", genre: "كوميدي، تاريخي", synopsis: "نسخة مصغرة مرحة من سيوف توكين رانبو، في مواقف يومية خفيفة وشقاوة شتوية. - عمل قصير" },
-    { title: "Multi-mind Mayhem", genre: "أكشن، فانتازيا، إيسيكاي، تناسخ", synopsis: "بارد، وريث عائلة نبيلة، بداخله 3 أرواح: روحه، ومحارب من عصر سينجوكو، وطالب ثانوي أوتاكو من العصر الحديث. يستخدم خبراتهم الثلاثة ليصبح مقاتلًا ومخترعًا ورجل أعمال." },
-  ]},
-  { date: "7 يناير 2027", short: "07", items: [
-    { title: "Gacha Girls Corps", genre: "أكشن، مغامرة، فانتازيا", synopsis: "مغامرة العمر مضمونة، مع فريق بنات يخوض معارك وحظوظًا لا تتوقف في عالم مليء بالمفاجآت." },
-    { title: "CHARISMA", genre: "كوميدي، حياة يومية", synopsis: "مجموعة شباب يعيشون معًا في بيت واحد، وكل واحد يحاول أن ينمّي الكاريزما الخاصة به ويصل إلى «الكاريزما الحقيقية»." },
-    { title: "I Lost My Adventurer's License, but It's Fine Because I Have an Adorable Daughter Now", genre: "أكشن، مغامرة، فانتازيا", synopsis: "دوجلاس، ساحر تعزيز أسطوري سابق، طُرد من فريق البطل وسُحبت منه رخصته. أصبح متشردًا حتى قابل رابي، بنت صغيرة ملعونة، فتبدأ مغامرة جديدة بينهما بعلاقة أبوية." },
-    { title: "Are You a Landmine, Chihara-san?", genre: "كوميدي، رومانسي", synopsis: "طالب ثانوي يجلس بجانب ماي تشيهارا، البنت التي يقول عنها الجميع «لغم» بسبب ستايلها الغامق ونظرتها الحادة. يكتشف أنها ليست خطيرة كما يظن الناس، وأنها بنت طيبة بطريقة غريبة." },
-    { title: "Otherworldly Munchkin: Let's Speedrun the Dungeon with Only 1 HP!", genre: "أكشن، مغامرة، فانتازيا، إيسيكاي، تناسخ", synopsis: "يوكيو، 16 سنة، يموت وهو ينقذ أخته الصغيرة سانا، 14 سنة، من غول. يُعرض عليه التناسخ، فيقرر أن يبحث عن أخته وينقذها حتى لو كان معه 1 HP فقط." },
-  ]},
-  { date: "8 يناير 2027", short: "08", items: [
-    { title: "BanG Dream! MyGO!!!!! // Ave Mujica", genre: "دراما، موسيقى", synopsis: "فصل جديد من فرق بانج دريم، بين الموسيقى والمشاعر والصراع على المسرح في ليالي الشتاء." },
-    { title: "BLESS", genre: "دراما، فنون بصرية", synopsis: "آيا، عُرض عليه أن يصبح موديل وهو صغير، لكن حلمه الحقيقي أن يصبح خبير مكياج. يقابل جون، زميلته التي تخجل من النمش في وجهها، فيقرران دخول مسابقة عروض أزياء في المدرسة معًا، هو بالمكياج وهي بالعرض." },
-  ]},
-  { date: "9 يناير 2027", short: "09", items: [
-    { title: "YAIBA: Samurai Legend Season 2", genre: "مغامرة، ساموراي", synopsis: "عودة يايبا في موسم ثانٍ مليء بالسيوف والمنافسات والروح القتالية. - موسم جديد" },
-    { title: "The Eternal Fool's Words of Wisdom: A Pawsitively Fantastic Adventure", genre: "فانتازيا", synopsis: "أسلي، ساحر شاب عاش منعزلًا ألفي سنة، مع رفيقه الكلب بوتي. بوتي يطلب منه أن يخرج ليرى العالم من جديد، فيعود للمجتمع ويحاول أن يستعيد اسمه ويواجه شرًا كبيرًا." },
-    { title: "MASHLE: MAGIC AND MUSCLES The Tri-Magicathlon Divine Visionary Final Exam Arc", genre: "أكشن، كوميدي، فانتازيا، مدرسي، ساخر", synopsis: "ماش يعود في اختبار جديد يجمع العضلات والسحر والكوميديا، في أقوى فصل من الامتحانات. - موسم جديد" },
-    { title: "The Fable 2nd Season", genre: "كوميدي، جريمة منظمة", synopsis: "عودة القاتل الأسطوري في حياة يومية هادئة ظاهريًا، لكن الفوضى لا تتركه أبدًا. - موسم جديد" },
-  ]},
-  { date: "10 يناير 2027", short: "10", items: [
-    { title: "Peropero Sparkles", genre: "كوميدي، حياة يومية", synopsis: "حكايات صغيرة لامعة عن الأكل والضحك واللحظات اليومية التي تصنع يومًا أجمل." },
-    { title: "Josemaru", genre: "حياة يومية", synopsis: "قصة قصيرة مرحة عن يوميات شخصية لا تتوقف عن إثارة الضحك. - عمل قصير" },
-    { title: "Mercedes and the Waning Moon", genre: "مغامرة، فانتازيا، مصاص دماء", synopsis: "مرسيدس، وُلدت من جديد مصاصة دماء لأب نبيل وأم منبوذة. تعرف أن أباها سيختار وريثًا غيرها، فتفكر كيف ستعيش هي وأمها والخادمة العجوز وحدهن." },
-    { title: "Shangri-La Frontier Season 3", genre: "أكشن، مغامرة، فانتازيا، ألعاب فيديو", synopsis: "سونراكو يعود إلى أخطر لعبة في العالم، في موسم ثالث مليء بالزعماء والأسرار والتحديات. - موسم جديد" },
-  ]},
-  { date: "11 يناير 2027", short: "11", items: [
-    { title: "THE ONE PIECE", genre: "مغامرة، أكشن، فانتازيا", synopsis: "إعادة إنتاج ملحمية لرحلة لوفي وطاقمه نحو الكنز الأسطوري، بروح جديدة ورؤية مختلفة للبداية التي أحبها الجميع. - موسم جديد" },
-    { title: "Jujutsu Kaisen Season 3", genre: "أكشن، فانتازيا", synopsis: "يوجي ورفاقه يواجهون لعنة الإبادة في معارك أخطر من أي وقت، حيث يصبح كل قرار مصيريًا. - موسم جديد" },
-    { title: "Frieren: Beyond Journey's End Season 2", genre: "مغامرة، فانتازيا، دراما", synopsis: "فريرن تواصل رحلتها لفهم المشاعر الإنسانية والذكريات، في فصل شتوي هادئ ومؤثر. - موسم جديد" },
-    { title: "Kimi ni Todoke Season 3", genre: "رومانسي، مدرسي", synopsis: "ساواكو وكازيهايا يكبران معًا، وبين الخجل والاعترافات الصغيرة تكبر قصة حب لطيفة. - موسم جديد" },
-    { title: "Blue Box Season 2", genre: "رومانسي، رياضي", synopsis: "تايكي وتشيناتسو بين الريشة وكرة السلة، وبين الحلم والقلب، في موسم ثانٍ مليء بالمشاعر الصادقة. - موسم جديد" },
-  ]},
-  { date: "12 يناير 2027", short: "12", items: [
-    { title: "One-Punch Man Season 3 Part 2", genre: "أكشن، كوميدي", synopsis: "سايتاما يعود بلكمة واحدة، بينما تتصاعد حرب الأبطال والوحوش إلى ذروة لا تُنسى. - موسم جديد" },
-    { title: "My Hero Academia: Final Season Part 2", genre: "أكشن", synopsis: "الفصل الأخير من معركة الأبطال، حيث يقرر ديكو ورفاقه مصير عالم الأبطال إلى الأبد. - موسم جديد" },
-    { title: "Dandadan Season 2 Part 2", genre: "أكشن، كوميدي، خارق", synopsis: "موومو وأوكارون بين الأشباح والفضائيين، في مغامرة مجنونة لا تعرف الهدوء. - موسم جديد" },
-    { title: "SPY x FAMILY Season 3 Part 2", genre: "أكشن، كوميدي", synopsis: "عائلة فورجر تعود بأسرار ومهمات ومواقف عائلية مضحكة، وأنيا كالعادة في قلب الفوضى. - موسم جديد" },
-  ]},
-  { date: "13 يناير 2027", short: "13", items: [
-    { title: "SAKAMOTO DAYS Season 2", genre: "أكشن، كوميدي", synopsis: "ساكاموتو، القاتل الأسطوري الذي أصبح صاحب متجر، يعود لحماية عائلته بأسلوب مضحك وقوي. - موسم جديد" },
-    { title: "Chainsaw Man: Reze Arc", genre: "أكشن، فانتازيا", synopsis: "دينجي يلتقي ريزي في قصة حب وخطر، في فصل سينمائي مشحون بالمشاعر والانفجارات. - فيلم", tag: "فيلم" },
-    { title: "Oshi no Ko Season 3", genre: "دراما، موسيقى", synopsis: "أكوا وروبي يواصلان كشف أسرار عالم الأيدولز والانتقام والشهرة. - موسم جديد" },
-    { title: "Re:Zero Season 4", genre: "إيسيكاي، فانتازيا، دراما", synopsis: "سوبارو يعود للموت والعودة من جديد، في مواجهة ألم جديد واختيارات أصعب. - موسم جديد" },
-  ]},
-  { date: "14 يناير 2027", short: "14", items: [
-    { title: "Mushoku Tensei Season 3", genre: "إيسيكاي، فانتازيا", synopsis: "روديوس يواصل رحلته في عالم جديد، بين العائلة والسحر والمسؤولية. - موسم جديد" },
-    { title: "That Time I Got Reincarnated as a Slime Season 4", genre: "إيسيكاي، فانتازيا", synopsis: "ريمورو يبني مملكته ويواجه أعداء جددًا بحكمة وقوة لا تتوقف. - موسم جديد" },
-    { title: "The Apothecary Diaries Season 3", genre: "دراما، غموض", synopsis: "ماو ماو تعود بألغاز القصر وأسرار الطب والسموم في موسم جديد. - موسم جديد" },
-    { title: "Kaguya-sama: Love is War Season 4", genre: "رومانسي، كوميدي", synopsis: "كاغويا وشيروغاني في حرب حب جديدة، من سيفترف أولًا؟ - موسم جديد" },
-  ]},
-  { date: "15 يناير 2027", short: "15", items: [
-    { title: "Horimiya: The Missing Pieces Season 2", genre: "رومانسي، كوميدي", synopsis: "هوري وميامورا يعودان بلحظات لم تُحكَ بعد، مليئة بالدفء والضحك. - موسم جديد" },
-    { title: "Demon Slayer: Infinity Castle Part 2", genre: "أكشن، فانتازيا", synopsis: "تانجيرو ورفاقه في قلب القلعة اللانهائية، في معركة مصيرية ضد موزان. - فيلم", tag: "فيلم" },
-    { title: "Fruits Basket: Prelude", genre: "رومانسي، دراما", synopsis: "قصة حب والدي تورو، البداية التي صنعت كل شيء في فروتس باسكت. - فيلم", tag: "فيلم" },
-    { title: "A Couple of Cuckoos Season 2", genre: "رومانسي، كوميدي", synopsis: "ناجي وإيريكا وأصدقاؤهما في فوضى رومانسية جديدة لا تنتهي. - موسم جديد" },
-  ]},
-  { date: "16 يناير 2027", short: "16", items: [
-    { title: "Call of the Night Season 2", genre: "رومانسي، فانتازيا، مصاص دماء", synopsis: "كو ونازونا تحت سماء الليل، بين الحرية والحب والخلود. - موسم جديد" },
-    { title: "Rent-a-Girlfriend Season 4", genre: "رومانسي، كوميدي", synopsis: "كازويا وشيزورو في موسم جديد من الارتباك والمشاعر غير المحسومة. - موسم جديد" },
-    { title: "The Dangers in My Heart Season 3", genre: "رومانسي، كوميدي", synopsis: "إيتشيكاوا ويامادا يكبران معًا، في قصة مراهقة صادقة ولطيفة. - موسم جديد" },
-    { title: "Aikatsu! Winter Stage", genre: "موسيقى، مدرسي", synopsis: "أويكاتسو تعود على مسرح الشتاء، حيث تلمع الأيدولز بالأغاني والرقصات والأحلام الكبيرة." },
-  ]},
-  { date: "17 يناير 2027", short: "17", items: [
-    { title: "WIND BREAKER Season 3", genre: "أكشن، مدرسي", synopsis: "ساكورا وفرقة بوفورين يحمون مدينتهم في موسم جديد من القتال والصداقة. - موسم جديد" },
-    { title: "Kaiju No. 8 Season 2 Part 2", genre: "أكشن، فانتازيا", synopsis: "كافكا يواجه الكايجو الأقوى، بينما يقاتل ليحمي من يحبهم. - موسم جديد" },
-    { title: "Fate/strange Fake Season 2", genre: "أكشن، فانتازيا", synopsis: "حرب كأس مزيفة في أمريكا، مع خدم وأبطال وصراع لا يتوقف. - موسم جديد" },
-    { title: "Gachiakuta Season 2", genre: "أكشن، فانتازيا", synopsis: "رودو يحول القمامة إلى قوة، في عالم قاسٍ لا يرحم الضعفاء. - موسم جديد" },
-  ]},
-];
+const groups: Group[] = (animeData as { groups: Group[] }).groups;
 
 const total = groups.reduce((n, g) => n + g.items.length, 0);
 const COLLECTION = "winter2027_picks";
@@ -202,10 +116,12 @@ export default function App() {
   const toggleSynopsis = (t: string) => { const n = new Set(openSynopsis); if (n.has(t)) n.delete(t); else n.add(t); setOpenSynopsis(n); };
 
   const matchesFilter = (a: Anime) => {
+    const g = a.genre.toLowerCase();
     if (activeFilter === "الكل") return true;
-    if (activeFilter === "أفلام") return a.tag === "فيلم" || a.genre.includes("فيلم");
-    if (activeFilter === "مواسم جديدة") return a.title.includes("Season") || a.title.includes("Part") || a.synopsis.includes("موسم جديد");
-    return a.genre.includes(activeFilter);
+    if (activeFilter === "أفلام") return a.tag === "فيلم" || g.includes("فيلم") || g.includes("movie");
+    if (activeFilter === "مواسم جديدة") return /season|part|موسم|جزء/i.test(a.title) || /موسم جديد|season/i.test(a.synopsis);
+    const map: Record<string, string[]> = { "أكشن": ["أكشن", "action"], "رومانسي": ["رومانسي", "romance"], "كوميدي": ["كوميدي", "comedy"], "إيسيكاي": ["إيسيكاي", "isekai"], "فانتازيا": ["فانتازيا", "fantasy"] };
+    return (map[activeFilter] ?? [activeFilter]).some((k) => g.includes(k.toLowerCase()));
   };
 
   const selectedList: SelectedDetail[] = useMemo(() => { const o: SelectedDetail[] = []; groups.forEach((g) => g.items.forEach((it) => { if (selected.has(it.title)) o.push({ ...it, date: g.date }); })); return o; }, [selected]);

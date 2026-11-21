@@ -21,6 +21,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - name: Build anime data from Excel
+        run: python3 scripts/build_anime_data.py
       - name: Install dependencies
         run: npm install
       - name: Build site
