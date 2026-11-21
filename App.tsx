@@ -189,7 +189,7 @@ export default function App() {
           } else await callApi("records.replace", { collection: COLLECTION, id: recordIdRef.current, value: { titles: ordered } });
           if (!pendingSelectionRef.current) setSaveState("saved");
         } catch {
-          if (!pendingSelectionRef.current) { setSaveState("error"); showToast("ما اتحفظتش — جرّب تاني"); }
+          if (!pendingSelectionRef.current) { setSaveState("error"); showToast("ما اتحفظتوش — جرّبوا تاني"); }
         }
       }
       persistingRef.current = false;
@@ -248,7 +248,7 @@ export default function App() {
         <div className="absolute inset-[-30%] opacity-[0.10]" style={{ backgroundImage: `url(${watermarkUrl})`, backgroundRepeat: "repeat", backgroundSize: "440px auto", backgroundPosition: "center", transform: "rotate(-18deg)" }} />
       </div>
       {SNOW.map((s, i) => <span key={i} className="snowflake" style={{ left: `${s.left}%`, animationDelay: `${s.delay}s`, animationDuration: `${s.dur}s`, fontSize: `${s.size}px` }}>{s.char}</span>)}
-      <div className="relative z-10 mx-auto w-full max-w-[480px] px-3 pb-8 sm:px-4">
+      <div className="relative z-10 mx-auto w-full max-w-[1280px] px-3 pb-10 sm:px-6 lg:px-8">
         {/* TOP BAR — small logo */}
         <div className="sticky top-[var(--safe-area-inset-top)] z-30 mt-2 flex items-center justify-between gap-2 rounded-2xl glass px-2 py-2" data-safe-area-sticky-top>
           <div className="flex items-center gap-2">
@@ -258,20 +258,20 @@ export default function App() {
           <span className="flex items-center gap-1 rounded-full bg-white px-2.5 py-1.5 text-[11px] font-black text-[#071a3a]"><Snowflake className="h-3.5 w-3.5" /> ❄️ شتاء</span>
         </div>
 
-        <header className="mt-5 text-center">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/40 bg-white/15 px-3 py-1.5 text-[11px] font-extrabold text-[#dff2ff]"><Sparkles className="h-3.5 w-3.5" /> قائمة من الملف فقط • اختار بالنجمة ⭐</span>
-          <h1 className="mt-4 text-[clamp(2.1rem,9vw,3.2rem)] font-black leading-[1.05] drop-shadow-[0_4px_20px_rgba(124,196,255,.5)]">جدول أنمي<br />شتاء 2027 ❄️</h1>
-          <p dir="ltr" className="font-en mt-2 text-base font-bold tracking-[0.18em] text-[#bfe6ff]">WINTER 2027 - {total} عمل</p>
-          <p className="mx-auto mt-3 max-w-[420px] text-[14px] font-bold leading-7 text-[#d9ecff]">كل الأنميات بالترتيب، من ديسمبر 2026 لحد 17 يناير 2027 — اتبع رحلة الثلج، واختار أعمالك بالنجمة ⭐</p>
-          <div className="ice-rule mx-auto mt-4 max-w-[300px]" />
+        <header className="mt-5 text-center md:mx-auto md:max-w-3xl lg:mt-8">
+          <span className="inline-flex min-h-9 items-center gap-1.5 rounded-full border border-white/40 bg-white/15 px-3 py-1.5 text-[11px] font-extrabold text-[#dff2ff] sm:text-xs"><Sparkles className="h-3.5 w-3.5" /> قائمة من الملف فقط • اختار بالنجمة ⭐</span>
+          <h1 className="mt-4 text-[clamp(2.1rem,9vw,4.5rem)] font-black leading-[1.05] drop-shadow-[0_4px_20px_rgba(124,196,255,.5)] sm:mt-6">جدول أنمي<br />شتاء 2027 ❄️</h1>
+          <p dir="ltr" className="font-en mt-2 text-base font-bold tracking-[0.18em] text-[#bfe6ff] sm:text-lg">WINTER 2027 - {total} عمل</p>
+          <p className="mx-auto mt-3 max-w-[620px] text-[14px] font-bold leading-7 text-[#d9ecff] sm:text-[15px] sm:leading-8">كل الأنميات بالترتيب، من ديسمبر 2026 لحد 17 يناير 2027 — اتبع رحلة الثلج، واختار أعمالك بالنجمة ⭐</p>
+          <div className="ice-rule mx-auto mt-4 max-w-[300px] sm:max-w-[420px]" />
         </header>
 
         {/* TOP 5 SWIPE */}
         <section aria-label="أفضل 5 أعمال" className="mt-6">
           <div className="flex items-center justify-between"><h2 className="flex items-center gap-2 text-lg font-black"><span className="text-2xl">🏆</span> Top 5 سوايب</h2><span className="text-[11px] font-bold text-[#bfe6ff]">اسحب يمين وشمال ←</span></div>
-          <div className="no-scrollbar -mx-1 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-1">
+          <div className="no-scrollbar -mx-1 mt-3 flex snap-x snap-mandatory gap-3 overflow-x-auto px-1 pb-2 sm:gap-4">
             {top5.map((a, i) => { const isSel = selected.has(a.title); return (
-              <article key={a.title} className="anime-card w-[230px] shrink-0 snap-center rounded-3xl p-4">
+              <article key={a.title} className="anime-card w-[230px] shrink-0 snap-center rounded-3xl p-4 sm:w-[280px] lg:w-[300px]">
                 <div className="flex items-center justify-between"><span className="rounded-full bg-white px-2.5 py-1 text-[11px] font-black text-[#071a3a]">#{i + 1} • TOP</span><button onClick={() => toggle(a.title)} aria-label={isSel ? "إزالة" : "إضافة"} className={`flex h-9 w-9 items-center justify-center rounded-full text-lg ${isSel ? "bg-white text-[#071a3a]" : "border border-white/50 text-white"}`}>{isSel ? "★" : "☆"}</button></div>
                 <p className="mt-3 text-[11px] font-bold text-[#bfe6ff]">{a.date} • {a.genre}</p>
                 <h3 dir="ltr" className="mt-1 text-left text-[19px] font-bold leading-snug [overflow-wrap:anywhere]">{a.title}</h3>
@@ -291,13 +291,13 @@ export default function App() {
 
         {/* SNOW JOURNEY TIMELINE */}
         {expanded && (
-          <div className="relative mt-7">
-            <div className="absolute bottom-6 right-[18px] top-2 w-[3px] rounded-full bg-gradient-to-b from-white via-[#bfe6ff] to-[#7cc4ff]" />
-            <div className="space-y-7">
-              {filtered.length === 0 && <div className="rounded-3xl border border-dashed border-white/40 p-8 text-center"><p className="text-lg font-black">مفيش نتيجة مطابقة ❄️</p><p className="mt-2 text-sm text-[#d9ecff]">جرّب كلمة تانية أو اختار «الكل».</p><button onClick={() => { setQuery(""); setActiveFilter("الكل"); }} className="mt-4 rounded-full bg-white px-4 py-2 text-sm font-black text-[#071a3a]">إعادة ضبط القائمة</button></div>}
+          <div className="relative mt-7 md:grid md:grid-cols-2 md:gap-5 lg:grid-cols-3 xl:grid-cols-4">
+            <div className="absolute bottom-6 right-[18px] top-2 w-[3px] rounded-full bg-gradient-to-b from-white via-[#bfe6ff] to-[#7cc4ff] md:hidden" />
+            <div className="contents md:contents">
+              {filtered.length === 0 && <div className="rounded-3xl border border-dashed border-white/40 p-8 text-center md:col-span-2 lg:col-span-3 xl:col-span-4"><p className="text-lg font-black">مفيش نتيجة مطابقة ❄️</p><p className="mt-2 text-sm text-[#d9ecff]">جرّب كلمة تانية أو اختار «الكل».</p><button onClick={() => { setQuery(""); setActiveFilter("الكل"); }} className="mt-4 min-h-11 rounded-full bg-white px-4 py-2 text-sm font-black text-[#071a3a]">إعادة ضبط القائمة</button></div>}
               {filtered.map((group) => (
-                <section key={group.date} aria-label={group.date} className="relative pr-12">
-                  <span className="absolute right-[5px] top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shadow-[0_0_18px_rgba(255,255,255,.9)]">❄️</span>
+                <section key={group.date} aria-label={group.date} className="relative mb-7 pr-12 md:mb-0 md:pr-0">
+                  <span className="absolute right-[5px] top-3 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white text-base shadow-[0_0_18px_rgba(255,255,255,.9)] md:hidden">❄️</span>
                   <div className="date-strip overflow-hidden rounded-2xl px-4 py-3.5 shadow-[0_14px_35px_rgba(0,0,0,.25)]">
                     <div className="flex items-center justify-between gap-2"><div><p className="flex items-center gap-1.5 text-[11px] font-black tracking-widest"><CalendarDays className="h-4 w-4" /> موعد العرض • RELEASE</p><h2 className="mt-0.5 text-[clamp(1.5rem,6vw,2rem)] font-black leading-none">{group.date}</h2></div><div className="text-left shrink-0"><div className="font-en text-2xl font-bold leading-none">{String(group.items.length).padStart(2, "0")}</div><div className="mt-1 text-[10px] font-black">عمل • TITLES</div></div></div>
                   </div>
@@ -330,16 +330,16 @@ export default function App() {
 
       {selected.size > 0 && (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-white/30 bg-[#071a3a]/95 backdrop-blur-xl">
-          <div className="mx-auto flex max-w-[480px] flex-col gap-2 px-3 py-3">
-            <div className="flex items-center gap-3"><div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-[#071a3a]"><Star className="h-5 w-5 fill-[#071a3a]" /></div><div className="min-w-0"><p className="text-sm font-black [overflow-wrap:anywhere]">اخترت {selected.size} من {total} — ⭐ قائمتي</p><p className="text-[11px] font-bold text-[#bfe6ff]">اضغط «شير قايمتي» لعمل صورة 1080×1920</p></div></div>
-            <div className="flex gap-2"><button onClick={handleCreateImage} disabled={generating} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#071a3a] disabled:opacity-60">{generating ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#071a3a] border-t-transparent" /> : <Share2 className="h-4 w-4" />}{generating ? "بنجهز الصورة..." : "شير قايمتي 📤"}</button><button onClick={clearAll} className="flex items-center justify-center gap-2 rounded-xl border border-white/40 bg-white/10 px-4 py-3 text-sm font-black"><Trash2 className="h-4 w-4" /> امسح الكل</button></div>
+          <div className="mx-auto flex max-w-[1280px] flex-col gap-2 px-3 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-white text-[#071a3a]"><Star className="h-5 w-5 fill-[#071a3a]" /></div><div className="min-w-0"><p className="text-sm font-black [overflow-wrap:anywhere]">اخترت {selected.size} من {total} — ⭐ قائمتي</p><p className="text-[11px] font-bold text-[#bfe6ff]">اضغط «شير قايمتي» لعمل صورة 1080×1920</p></div></div>
+            <div className="flex gap-2 sm:w-auto"><button onClick={handleCreateImage} disabled={generating} className="flex min-h-12 flex-1 items-center justify-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#071a3a] disabled:opacity-60 sm:min-w-[190px]">{generating ? <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#071a3a] border-t-transparent" /> : <Share2 className="h-4 w-4" />}{generating ? "بنجهز الصورة..." : "شير قايمتي 📤"}</button><button onClick={clearAll} className="flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/40 bg-white/10 px-4 py-3 text-sm font-black"><Trash2 className="h-4 w-4" /> امسح الكل</button></div>
           </div>
         </div>
       )}
 
       {showModal && (
         <div className="fixed inset-0 z-[60] overflow-y-auto bg-[#020a1e]/85 backdrop-blur-md pt-[max(1rem,var(--safe-area-inset-top))] pb-6">
-          <div className="min-h-full flex items-start sm:items-center justify-center p-3 sm:p-6"><div className="w-full max-w-[480px] overflow-hidden rounded-[24px] border border-white/30 bg-[#0a1d3d] shadow-2xl">
+          <div className="min-h-full flex items-start sm:items-center justify-center p-3 sm:p-6"><div className="w-full max-w-[680px] overflow-hidden rounded-[24px] border border-white/30 bg-[#0a1d3d] shadow-2xl">
             <div className="flex items-center justify-between border-b border-white/15 px-5 py-4"><div className="flex items-center gap-2"><div className="flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#071a3a]">❄️</div><div><p className="text-sm font-black">صورة قائمتك جاهزة 📸</p><p className="text-[11px] font-bold text-[#bfe6ff]">1080×1920 • ستوري • شتوية</p></div></div><button onClick={() => setShowModal(false)} className="flex h-8 w-8 items-center justify-center rounded-full bg-white/10 hover:bg-white/20"><X className="h-4 w-4" /></button></div>
             <div className="p-3 sm:p-4">{generatedUrl ? <div className="overflow-hidden rounded-[18px] border border-white/30 bg-black"><img src={generatedUrl} alt={`قائمة مشاهدة شتاء 2027 - ${selected.size} عمل`} className="mx-auto block h-auto max-h-[calc(100dvh-var(--safe-area-inset-top)-14rem)] w-full object-contain" /></div> : <div className="rounded-xl bg-white/10 p-8 text-center"><p className="text-sm font-bold text-[#dff2ff]">جاري تجهيز الصورة...</p></div>}
               <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2"><button onClick={handleDownload} className="flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3.5 text-sm font-black text-[#071a3a]"><Download className="h-4 w-4" /> تحميل PNG ⬇️</button><button onClick={handleShareImage} className="flex items-center justify-center gap-2 rounded-xl border border-white/40 bg-[#dff2ff] px-5 py-3.5 text-sm font-black text-[#071a3a]"><Share2 className="h-4 w-4" /> مشاركة الصورة</button></div>
