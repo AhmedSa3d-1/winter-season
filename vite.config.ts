@@ -3,5 +3,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig(({ command }) => ({
   plugins: [react()],
-  base: command === "build" ? "/winter-season/" : "/",
+  base: command === "build" && process.env.GITHUB_ACTIONS === "true" ? "/winter-season/" : "/",
 }));
